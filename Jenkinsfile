@@ -2,16 +2,24 @@ pipeline {
   agent any
 
   stages {
+
     stage('Build Docker Image') {
       steps {
         sh 'docker build -t snake-game .'
       }
     }
 
-    stage('Run Container') {
+    stage('Stop Old Container') {
       steps {
-        sh 'docker run -d -p 8086:80 snake-game'
+        sh 'docker rm -f snake-container || true'
       }
     }
+
+    stage('Run Container') {
+      steps {
+        sh 'docker run -d -p 8086:80 --name snake-container snake-game'
+      }
+    }
+
   }
 }
