@@ -9,9 +9,9 @@ pipeline {
       }
     }
 
-    stage('Stop Old Container') {
+    stage('Clean Old Containers') {
       steps {
-        sh 'docker rm -f snake-container || true'
+        sh 'docker rm -f $(docker ps -aq) || true'
       }
     }
 
