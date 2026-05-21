@@ -1,27 +1,55 @@
 pipeline {
-  agent {
-    label 'docker-agent'
-  }
 
-  stages {
-
-    stage('Build Docker Image') {
-      steps {
-        sh 'docker build -t snake-game .'
-      }
+    agent {
+        label 'agent1'
     }
 
-    stage('Clean Old Containers') {
-      steps {
-        sh 'docker rm -f $(docker ps -aq) || true'
-      }
+    environment {
+        IMAGE_NAME = "snake-game"
+        CONTAINER_NAME = "snake-container"
+        PORT = "8085"
     }
 
-    stage('Run Container') {
-      steps {
-        sh 'docker run -d -p 8085:80 --name snake-container snake-game'
-      }
+    stages {
+
+        stage('Clone Code') {
+            steps {
+                git 'https://github.com/soundarya21112004/snake-game.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t $IMAGE_NAME .'
+            }
+        }
+
+        stage('Remove Old Container') {
+            steps {
+                sh '''
+                docker stop $CONTAINER_NAME || true
+                docker rm $CONTAINER_NAME || true
+                '''
+            }
+        }
+
+        stage('Run Docker Container') {
+            steps {
+                sh 'docker run -d -p $PORT:80 --name $CONTAINER_NAME $IMAGE_NAME'
+            }
+        }
+
     }
 
-  }
+    post {
+
+        success {
+            echo 'Snake Game deployed successfully!'
+        }
+
+        failure {
+            echo 'Pipeline failed!'
+        }
+
+    }
 }
