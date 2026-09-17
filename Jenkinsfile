@@ -14,7 +14,7 @@ pipeline {
 
         stage('Clone Code') {
             steps {
-                git 'https://github.com/soundarya21112004/snake-game.git'
+                git branch: 'main', url: 'https://github.com/soundarya21112004/snake-game.git'
             }
         }
 
