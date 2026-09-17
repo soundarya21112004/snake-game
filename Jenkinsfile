@@ -7,7 +7,7 @@ pipeline {
     environment {
         IMAGE_NAME = "snake-game"
         CONTAINER_NAME = "snake-container"
-        PORT = "8085"
+        PORT = "8080"
     }
 
     stages {
